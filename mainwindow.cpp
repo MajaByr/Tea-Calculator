@@ -8,10 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     QFont font("Garamond");
     font.setPointSize(18);
-    //font.setStyleHint(QFont::Monospace);
-    //QApplication::setFont(font);
-    //ui->label->setFont(QApplication::font());
-    //ui->QLabel::setFont(font);
     setStyleSheet("background-color: #224d1f;");
 }
 
@@ -27,14 +23,23 @@ void MainWindow::on_btnCalculate_clicked()
     ui->lcdTime->display( teaTime );
 }
 
-TeaType MainWindow::getTeaType()
+void MainWindow::on_btnCalculate_2_clicked()
 {
-    return str2Type( ui->cboxType->currentText() );
+    ui->labCoffeineRes->setText( QString::number(calculateCoffeine(getTeaTypeC(), getSize(), getBrewNumberCof()), 'g', 5) );
 }
 
-TeaType MainWindow::getTeaTypeC()
+void MainWindow::on_btnCalculate_3_clicked()
 {
-    return str2Type( ui->cboxTypeC->currentText() );
+    if( getExpectTemp()>getLiquidTemp() || getOutsideTemp()>getLiquidTemp() ) { ui->labelWaitRes->setText("Invalid parameters"); return; }
+    ui->labelWaitRes->setText( QString::number(calculateWaitingTime(getSizeW(), getOutsideTemp(), getLiquidTemp(), getExpectTemp())) );
+}
+
+void MainWindow::on_btnCalculate_4_clicked()
+{
+    if( getColdW()>getHotW() || getColdW()>getExpectTempM() || getHotW()<getExpectTempM() ) return;
+    double* ColdHot = calculateProportions( getColdW(), getHotW(), getExpectTempM() );
+    ui->labelColdRes->setText( QString::number(ColdHot[0]) );
+    ui->labelHotRes->setText( QString::number(ColdHot[1]) );
 }
 
 TeaType MainWindow::str2Type(QString str)
@@ -46,10 +51,36 @@ TeaType MainWindow::str2Type(QString str)
     else exit(1); //in other case shut down, add exception
 }
 
+//Getters
+
+double MainWindow::getExpectTempM()
+{
+    return ui->spinBoxExpM->value();
+}
+
+double MainWindow::getColdW()
+{
+    return ui->spinBoxColdW->value();
+}
+
+double MainWindow::getHotW()
+{
+    return ui->spinBoxHotW->value();
+}
+
+TeaType MainWindow::getTeaType()
+{
+    return str2Type( ui->cboxType->currentText() );
+}
+
+TeaType MainWindow::getTeaTypeC()
+{
+    return str2Type( ui->cboxTypeC->currentText() );
+}
 
 int MainWindow::getStrength()
 {
-    return ui->sliderStrength->value(); //zwraca 0-99
+    return ui->sliderStrength->value(); //returns 0-99
 }
 
 int MainWindow::getBrewNumber() //1-3
@@ -62,10 +93,19 @@ int MainWindow::getBrewNumberCof() //1-3
     return ui->sliderBrewNC->value();
 }
 
-
-void MainWindow::on_btnCalculate_2_clicked()
+double MainWindow::getOutsideTemp()
 {
-    ui->labCoffeineRes->setText( QString::number(calculateCoffeine(getTeaTypeC(), getSize(), getBrewNumberCof()), 'g', 5) );
+    return ui->spinBoxOut->value();
+}
+
+double MainWindow::getLiquidTemp()
+{
+    return ui->spinBoxLiq->value();
+}
+
+double MainWindow::getExpectTemp()
+{
+    return ui->spinBoxExp->value();
 }
 
 int MainWindow::getSize()
@@ -88,49 +128,4 @@ int MainWindow::getSizeW()
         case 4: return 500;
         default: return 250;
     }
-}
-
-void MainWindow::on_btnCalculate_3_clicked()
-{
-    if( getExpectTemp()>getLiquidTemp() || getOutsideTemp()>getLiquidTemp() ) { ui->labelWaitRes->setText("Invalid parameters"); return; }
-    ui->labelWaitRes->setText( QString::number(calculateWaitingTime(getSizeW(), getOutsideTemp(), getLiquidTemp(), getExpectTemp())) );
-}
-
-double MainWindow::getOutsideTemp()
-{
-    return ui->spinBoxOut->value();
-}
-
-double MainWindow::getLiquidTemp()
-{
-    return ui->spinBoxLiq->value();
-}
-
-double MainWindow::getExpectTemp()
-{
-    return ui->spinBoxExp->value();
-}
-
-
-void MainWindow::on_btnCalculate_4_clicked()
-{
-    if( getColdW()>getHotW() || getColdW()>getExpectTempM() || getHotW()<getExpectTempM() ) return;
-    double* ColdHot = calculateProportions( getColdW(), getHotW(), getExpectTempM() );
-    ui->labelColdRes->setText( QString::number(ColdHot[0]) );
-    ui->labelHotRes->setText( QString::number(ColdHot[1]) );
-}
-
-double MainWindow::getExpectTempM()
-{
-    return ui->spinBoxExpM->value();
-}
-
-double MainWindow::getColdW()
-{
-    return ui->spinBoxColdW->value();
-}
-
-double MainWindow::getHotW()
-{
-    return ui->spinBoxHotW->value();
 }

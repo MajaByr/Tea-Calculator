@@ -17,32 +17,30 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    TeaType getTeaType();
-    int getStrength();
-    int getSize();
-    int getBrewNumber();
-    int getBrewNumberCof();
-    TeaType getTeaTypeC();
-
-    int getSizeW();
-    double getOutsideTemp();
-    double getLiquidTemp();
-    double getExpectTemp();
-
-    double getColdW();
-    double getHotW();
-    double getExpectTempM();
 
 private slots:
     void on_btnCalculate_clicked();
     void on_btnCalculate_2_clicked();
-
     void on_btnCalculate_3_clicked();
-
     void on_btnCalculate_4_clicked();
 
 private:
     Ui::MainWindow *ui;
     TeaType str2Type(QString str);
+
+    TeaType getTeaType();
+    TeaType getTeaTypeC();
+    int getStrength();
+    int getSize();
+    int getSizeW();
+    int getBrewNumber();
+    int getBrewNumberCof();
+    double getOutsideTemp();
+    double getLiquidTemp();
+    double getColdW();
+    double getHotW();
+    double getExpectTempM();
+    double getExpectTemp();
+
 };
 #endif // MAINWINDOW_H
